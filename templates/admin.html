@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Админ-панель{% endblock %}
+{% block content %}
+<h2>Администрирование</h2>
+<p>Только администратор может удалять статьи.</p>
+<hr>
+<h3>Список статей</h3>
+{% for art in articles %}
+  <div class="card mb-2">
+    <div class="card-body">
+      <h4>{{ art.title }}</h4>
+      <p>{{ art.content|truncate(100) }}</p>
+      <p><small>Автор: {{ art.author.username }}</small></p>
+      <p><small>Просмотры: {{ art.views }}</small></p>
+      <form method="POST" action="{{ url_for('admin_delete_article', article_id=art.id) }}">
+        <button class="btn btn-danger">Удалить</button>
+      </form>
+    </div>
+  </div>
+{% endfor %}
+{% endblock %}

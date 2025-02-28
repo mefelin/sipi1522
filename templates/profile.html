@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+<h2>Профиль пользователя: {{ user_obj.username }}</h2>
+
+{% if g.user and g.user.id != user_obj.id %}
+  <form method="POST" action="{{ url_for('follow_user', user_id=user_obj.id) }}">
+    {% if follow_record %}
+      <button class="btn btn-danger">Отписаться</button>
+    {% else %}
+      <button class="btn btn-success">Подписаться</button>
+    {% endif %}
+  </form>
+{% endif %}
+
+<h3>Статьи автора:</h3>
+{% for article in user_obj.articles %}
+  <div class="card mb-2">
+    <div class="card-body">
+      <h4>{{ article.title }}</h4>
+      <p>{{ article.content|truncate(100) }}</p>
+      <a href="{{ url_for('article_page', article_id=article.id) }}" class="btn btn-primary">Читать</a>
+    </div>
+  </div>
+{% endfor %}
+{% endblock %}

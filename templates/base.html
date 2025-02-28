@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Платформа{% endblock %}</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="{{ url_for('index') }}">Знания</a>
+  <ul class="navbar-nav ml-auto">
+    {% if g.user %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('create_article') }}">Создать статью</a>
+      </li>
+      {% if g.user.is_admin %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin_panel') }}">Админ-панель</a>
+        </li>
+      {% endif %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('profile', user_id=g.user.id) }}">Мой профиль</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Выход</a>
+      </li>
+    {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('login') }}">Вход</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('register') }}">Регистрация</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+<div class="container mt-4">
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

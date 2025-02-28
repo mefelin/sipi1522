@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Статья{% endblock %}
+{% block content %}
+{% if create_mode %}
+  <h2>Создать статью</h2>
+  <form method="POST">
+    <div class="form-group">
+      <label for="title">Заголовок</label>
+      <input type="text" class="form-control" name="title" id="title" required>
+    </div>
+    <div class="form-group">
+      <label for="content">Содержание</label>
+      <textarea class="form-control" name="content" id="content" rows="5" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Опубликовать</button>
+  </form>
+{% else %}
+  <h2>{{ article.title }}</h2>
+  <p>{{ article.content }}</p>
+  <p>
+    <strong>Автор:</strong>
+    <a href="{{ url_for('profile', user_id=article.author.id) }}">{{ article.author.username }}</a>
+  </p>
+  <p>
+    <strong>Просмотры:</strong> {{ article.views }}
+  </p>
+  {% if g.user %}
+    <form method="POST" action="{{ url_for('like_article', article_id=article.id) }}">
+      {% if liked %}
+        <button class="btn btn-warning">Убрать лайк</button>
+      {% else %}
+        <button class="btn btn-primary">Поставить лайк</button>
+      {% endif %}
+    </form>
+    <p class="mt-2">Всего лайков: {{ article.likes|length }}</p>
+  {% else %}
+    <p>Лайки доступны только авторизованным пользователям.</p>
+  {% endif %}
+{% endif %}
+{% endblock %}
