@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Статья{% endblock %}
 {% block content %}
+
 {% if create_mode %}
+  <!-- РЕЖИМ СОЗДАНИЯ СТАТЬИ -->
   <h2>Создать статью</h2>
   <form method="POST">
     <div class="form-group">
@@ -12,18 +14,31 @@
       <label for="content">Содержание</label>
       <textarea class="form-control" name="content" id="content" rows="5" required></textarea>
     </div>
+    <!-- Выпадающий список тем (если нужно) -->
+    <div class="form-group">
+      <label for="topic">Тема</label>
+      <select class="form-control" name="topic" id="topic">
+        <option value="Общее">Общее</option>
+        <option value="Новости">Новости</option>
+        <option value="Спорт">Спорт</option>
+        <option value="IT">IT</option>
+      </select>
+    </div>
     <button type="submit" class="btn btn-success">Опубликовать</button>
   </form>
+
 {% else %}
+  <!-- РЕЖИМ ПРОСМОТРА СТАТЬИ -->
   <h2>{{ article.title }}</h2>
   <p>{{ article.content }}</p>
   <p>
     <strong>Автор:</strong>
     <a href="{{ url_for('profile', user_id=article.author.id) }}">{{ article.author.username }}</a>
   </p>
-  <p>
-    <strong>Просмотры:</strong> {{ article.views }}
-  </p>
+  <p><strong>Просмотры:</strong> {{ article.views }}</p>
+  <p><strong>Тема:</strong> {{ article.topic }}</p>
+  <p><strong>Дата:</strong> {{ article.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+
   {% if g.user %}
     <form method="POST" action="{{ url_for('like_article', article_id=article.id) }}">
       {% if liked %}
@@ -36,5 +51,35 @@
   {% else %}
     <p>Лайки доступны только авторизованным пользователям.</p>
   {% endif %}
+
+  <!-- Блок комментариев -->
+  <hr>
+  <h4>Комментарии</h4>
+  {% if comments %}
+    {% for comment in comments %}
+      <div class="card mb-2">
+        <div class="card-body">
+          <p>{{ comment.content }}</p>
+          <p><small>Автор: {{ comment.user.username }}</small></p>
+          <p><small>Дата: {{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</small></p>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Комментариев пока нет.</p>
+  {% endif %}
+
+  {% if g.user %}
+    <form method="POST" action="{{ url_for('add_comment', article_id=article.id) }}">
+      <div class="form-group">
+        <label for="commentContent">Оставить комментарий</label>
+        <textarea name="content" id="commentContent" class="form-control" rows="3" required></textarea>
+      </div>
+      <button class="btn btn-success" type="submit">Отправить</button>
+    </form>
+  {% else %}
+    <p>Чтобы оставить комментарий, <a href="{{ url_for('login') }}">войдите</a>.</p>
+  {% endif %}
 {% endif %}
+
 {% endblock %}

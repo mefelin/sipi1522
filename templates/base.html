@@ -3,13 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <title>{% block title %}Платформа{% endblock %}</title>
+  <!-- Подключаем Bootstrap 4 -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="{{ url_for('index') }}">Знания</a>
+
+  <!-- Пример списка тем (необязательно) -->
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('articles_by_topic', topic_name='Общее') }}">Общее</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('articles_by_topic', topic_name='Новости') }}">Новости</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('articles_by_topic', topic_name='Спорт') }}">Спорт</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('articles_by_topic', topic_name='IT') }}">IT</a>
+    </li>
+  </ul>
+
   <ul class="navbar-nav ml-auto">
     {% if g.user %}
+      <!-- Ссылка на уведомления с бейджем, если g.unread_count > 0 -->
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('notifications') }}">
+          Уведомления
+          {% if g.unread_count > 0 %}
+            <span class="badge badge-light">{{ g.unread_count }}</span>
+          {% endif %}
+        </a>
+      </li>
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('create_article') }}">Создать статью</a>
       </li>
@@ -34,8 +62,10 @@
     {% endif %}
   </ul>
 </nav>
+
 <div class="container mt-4">
   {% block content %}{% endblock %}
 </div>
+
 </body>
 </html>
